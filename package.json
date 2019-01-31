@@ -1,0 +1,10 @@
+{
+  "name": "lexer",
+  "version": "1.0.0",
+  "description": "ist-fwwb",
+  "main": "index.js",
+  "repository": "https://github.com/ist-fwwb/lexer-info-extrator.git",
+  "author": "zzbslayer",
+  "license": "MIT",
+  "private": false
+}
