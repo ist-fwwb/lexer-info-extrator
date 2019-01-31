@@ -1,10 +1,18 @@
 {
   "name": "lexer",
-  "version": "1.0.0",
-  "description": "ist-fwwb",
-  "main": "index.js",
-  "repository": "https://github.com/ist-fwwb/lexer-info-extrator.git",
-  "author": "zzbslayer",
-  "license": "MIT",
-  "private": false
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "baidu-aip-sdk": "^2.3.9",
+    "chinese-number-parser": "^0.0.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "morgan": "~1.9.0",
+    "pug": "2.0.0-beta11"
+  }
 }
