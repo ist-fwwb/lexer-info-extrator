@@ -57,6 +57,7 @@ router.get('/:text', function(req, res, next) {
                 }
                 else {
                     extractedInfo.roomId = data[0].id;
+                    extractedInfo.location = data[0].location
                 }
             }
             res.send(JSON.stringify(extractedInfo));

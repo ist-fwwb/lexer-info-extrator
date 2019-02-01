@@ -11,7 +11,7 @@ const extractInfo = (items) => {
     let startTime;
     let endTime;
     let firstVerb = true;
-    let content = "";
+    let heading = "";
     let date = "";
 
     for (let i in items){
@@ -75,7 +75,7 @@ const extractInfo = (items) => {
             }
         }
         else if (!firstVerb){
-            content += item.item;
+            heading += item.item;
         }
     }
     console.log(timeList)
@@ -104,7 +104,7 @@ const extractInfo = (items) => {
         res.startTime = -1;
         res.endTime = -1;
     }
-    res.content = content ? content : -1;
+    res.heading = heading ? heading : -1;
     res.date = date ? date : -1;
     
     return res;
