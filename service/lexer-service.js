@@ -81,19 +81,19 @@ const extractInfo = (items) => {
     console.log(timeList)
     if (timeList.length > 0){
         if (timeList.length === 1){
-            startTime = timeList[0];
-            endTime = idToTime(timeToId(timeList[0])+2)
+            startTime = timeToId(timeList[0]);
+            endTime = startTime+2;
         }
         else if (timeList.length > 1){
             let time1 = timeToId(timeList[0]);
             let time2 = timeToId(timeList[1]);
             if (time1 > time2){
-                startTime = idToTime(time2);
-                endTime = idToTime(time1);
+                startTime = time2;
+                endTime = time1;
             }
             else{
-                startTime = idToTime(time1);
-                endTime = idToTime(time2);
+                startTime = time1;
+                endTime = time2;
             }
         }
         

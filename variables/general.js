@@ -1,14 +1,22 @@
-var ChineseToNumber  = require('chinese-number-parser');
+const ChineseToNumber  = require('chinese-number-parser');
 
 const prefix = "http://";
 const domain = "47.106.8.44";
 const port = "31000";
 const server = prefix + domain + ":" + port;
 
-const dateToString = (date) => (date.toLocaleDateString([],{year:"numeric", month:"2-digit", day:"numeric"}).replace(/\//g,'-'));
+const dateToString = (date) => (date.toLocaleDateString([],{year:"numeric", month:"2-digit", day:"2-digit"}).replace(/\//g,'-'));
 const today = dateToString(new Date());
 
 const roomController = {
+    "getRoomByStartTimeAndEndTimeAndDate":(startTime, endTime, date) => {
+        let startTimeStr = startTime ? "startTime="+startTime+"&" : null;
+        let endTimeStr = endTime ? "endTime="+endTime+"&" : null;
+        let dateStr = date ? "date="+date+"&" : null;
+        let api = server+"/meetingroom?"+startTimeStr+endTimeStr+dateStr;
+        api = api.substring(0, api.length-1);
+        return api;
+    },
     "getRoom": () => (server + "/meetingroom" ),
     "getRoomByRoomId": (roomId) => (server + "/meetingroom/" + roomId),
     "createRoom": () => (server + "/meetingroom"), // json params in req body
@@ -112,27 +120,49 @@ const chineseDateToNumberDate = (basic_list) => {
 
         let number = Number(s_list[0]);
         if (!isNaN(number)){
-            res_month = String(number);
+            if (1 <= number && number <= 9)
+                res_month = "0" + String(number);
+            else
+                res_month = String(number);
         }
         else{
-            res_month = ChineseToNumber(s_list[0]);
+            let zh_num = ChineseToNumber(s_list[0]);
+            if (1 <= zh_num && zh_num <= 9)
+                res_month = "0" + String(zh_num);
+            else
+                res_month = String(zh_num);
         }
+
         number = Number(s_list[1]);
         if (!isNaN(number)){
-            res_day = String(number);
+            if (1 <= number && number <= 9)
+                res_day = "0" + String(number);
+            else
+                res_day = String(number);
         }
         else{
-            res_day = ChineseToNumber(s_list[1]);
+            let zh_num = ChineseToNumber(s_list[1]);
+            if (1 <= zh_num && zh_num <= 9)
+                res_day = "0" + String(zh_num);
+            else
+                res_day = String(zh_num);
         }
     }
     else{
         res_month = now.getMonth()+1;
         let number = Number(s);
         if (!isNaN(number)){
-            res_day = String(number);
+            if (1 <= number && number <= 9)
+                res_day = "0" + String(number);
+            else
+                res_day = String(number);
         }
         else{
-            res_day = ChineseToNumber(s);
+            let zh_num = ChineseToNumber(s_list[1]);
+            if (1 <= zh_num && zh_num <= 9)
+                res_day = "0" + String(zh_num);
+            else
+                res_day = String(zh_num);
         }
     }
     res = res_year + "-" + res_month + "-" + res_day;
