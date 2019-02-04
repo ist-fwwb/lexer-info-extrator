@@ -13,8 +13,21 @@ const extractInfo = (items) => {
     let date = "";
     let timeFlag = false;
 
+    let twoFlag = false; // 硬编码 cover 两月五号这种 case
+    for (let i=0; i<items.length; i++){
+        let item = items[i];
+        if (item.item === "两月"){
+            item = items[i+1];
+            item.item = "二月" + item.item;
+            item.basic_words.unshift("二月");
+            items.splice(i,1);
+            break;
+        }
+    }
+    console.log(items)
     for (let i in items){
         let item = items[i];
+
         // extract time
         if (item.ne === "TIME"){
             timeFlag = true;
@@ -25,6 +38,7 @@ const extractInfo = (items) => {
             let local_time_flag = false;
             for (let j in zh_date_time){
                 let temp_ele = zh_date_time[j];
+
                 if (local_date_flag){
                     zh_time.push(temp_ele);
                 }
