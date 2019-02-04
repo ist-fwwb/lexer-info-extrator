@@ -24,10 +24,14 @@ HttpClient.setRequestInterceptor(function(requestOptions) {
 router.get('/:text', function(req, res, next) {
     let text = req.params.text;
     let extractedInfo={};
+
+    /**
+     * Part 1: Lexer
+     */
     client.lexer(text)
     .then((result) => {
         console.log(JSON.stringify(result));
-        //extractedInfo.rawData = result;
+        extractedInfo.rawData = result;
         try{
             extractedInfo = extractInfo(result.items);
             console.log(JSON.stringify(extractedInfo));
@@ -40,7 +44,10 @@ router.get('/:text', function(req, res, next) {
         if (extractInfo.error){
             return res.send(JSON.stringify(extractedInfo));
         }
-        extractedInfo.rawData = result;
+
+        /**
+         * Part 2: Search for room
+         */
         let startTime = extractedInfo.startTime === -1 ? null : extractedInfo.startTime;
         let endTime = extractedInfo.endTime === -1 ? null : extractedInfo.endTime;
         let date = extractedInfo.date === -1 ? null : extractedInfo.date;
@@ -57,6 +64,12 @@ router.get('/:text', function(req, res, next) {
             }
             else{
                 if (data.length === 0){
+                    /**
+                     * Part 3: What if no suitable room ?
+                     * i) approximate room
+                     * ii) queue
+                     */
+
                     extractedInfo.roomId = -1;
                 }
                 else {

@@ -13,7 +13,7 @@ const extractInfo = (items) => {
     let date = "";
     let timeFlag = false;
 
-    let twoFlag = false; // 硬编码 cover 两月五号这种 case
+    // shanghainese patch
     for (let i=0; i<items.length; i++){
         let item = items[i];
         if (item.item === "两月"){
@@ -24,7 +24,7 @@ const extractInfo = (items) => {
             break;
         }
     }
-    console.log(items)
+
     for (let i in items){
         let item = items[i];
 
