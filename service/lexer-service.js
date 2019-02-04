@@ -10,9 +10,8 @@ const extractInfo = (items) => {
     let timeList = [];
     let startTime;
     let endTime;
-    let firstVerb = true;
-    let heading = "";
     let date = "";
+    let timeFlag = false;
 
     for (let i in items){
         let item = items[i];
@@ -32,7 +31,7 @@ const extractInfo = (items) => {
                 else {
                     zh_date.push(temp_ele);
                 }
-                if (temp_ele.includes("号") || temp_ele.includes("日")){
+                if (temp_ele.includes("号") || temp_ele.includes("日") || temp_ele === "明天" || temp_ele === "后天" || temp_ele === "今天"){
                     local_date_flag = true;
                 }
             }
@@ -69,14 +68,10 @@ const extractInfo = (items) => {
                 timeList.push(format_time);
             }
         }
-        else if (firstVerb){
-            if (item.pos === "v"){
-                firstVerb = false;
-            }
-        }
-        else if (!firstVerb){
-            heading += item.item;
-        }
+    }
+    if (!timeFlag){
+        res.error = "No Time Info";
+        return res;
     }
     console.log(timeList)
     if (timeList.length > 0){
@@ -104,7 +99,6 @@ const extractInfo = (items) => {
         res.startTime = -1;
         res.endTime = -1;
     }
-    res.heading = heading ? heading : -1;
     res.date = date ? date : -1;
     
     return res;

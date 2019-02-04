@@ -23,10 +23,10 @@ HttpClient.setRequestInterceptor(function(requestOptions) {
 
 router.get('/:text', function(req, res, next) {
     let text = req.params.text;
+    let extractedInfo={};
     client.lexer(text)
     .then((result) => {
         console.log(JSON.stringify(result));
-        let extractedInfo={};
         //extractedInfo.rawData = result;
         try{
             extractedInfo = extractInfo(result.items);
@@ -35,8 +35,12 @@ router.get('/:text', function(req, res, next) {
         catch(err){
             console.log("Extract Error:"+err)
             extractedInfo.error = "Extract Error";
-            res.send(JSON.stringify(extractedInfo));
+            return res.send(JSON.stringify(extractedInfo));
         }
+        if (extractInfo.error){
+            return res.send(JSON.stringify(extractedInfo));
+        }
+        extractedInfo.rawData = result;
         let startTime = extractedInfo.startTime === -1 ? null : extractedInfo.startTime;
         let endTime = extractedInfo.endTime === -1 ? null : extractedInfo.endTime;
         let date = extractedInfo.date === -1 ? null : extractedInfo.date;
@@ -60,19 +64,20 @@ router.get('/:text', function(req, res, next) {
                     extractedInfo.location = data[0].location
                 }
             }
-            res.send(JSON.stringify(extractedInfo));
+            return res.send(JSON.stringify(extractedInfo));
             
         })
         .catch((err) => {
             console.log("Fetch Error:"+err)
             extractedInfo.error = "Fetch Error";
-            res.send(JSON.stringify(extractedInfo));
+            return res.send(JSON.stringify(extractedInfo));
         })
         
     })
     .catch((err) => {
         console.log(err);
-        res.send(err);
+        extractedInfo.error = err;
+        return res.send(extractInfo);
     });
     
 });

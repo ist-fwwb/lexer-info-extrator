@@ -7,6 +7,11 @@ const server = prefix + domain + ":" + port;
 
 const dateToString = (date) => (date.toLocaleDateString([],{year:"numeric", month:"2-digit", day:"2-digit"}).replace(/\//g,'-'));
 const today = dateToString(new Date());
+const nextDay = (day) => {
+    let result = new Date(day);
+    result.setDate(result.getDate()+1);
+    return dateToString(result);
+}
 
 const roomController = {
     "getRoomByStartTimeAndEndTimeAndDate":(startTime, endTime, date) => {
@@ -103,6 +108,18 @@ const formatTime = (time) => {
   * @param {Array<String>} basic_list 
   */
 const chineseDateToNumberDate = (basic_list) => {
+    if (basic_list[0]==="今天"){
+        return today;
+    }
+    else if (basic_list[0]==="明天"){
+        return nextDay(today);
+    }
+    else if (basic_list[0]==="后天"){
+        return nextDay(nextDay(today));
+    }
+    else if (basic_list[0]==="大" && basic_list[1]==="后天"){
+        return nextDay(nextDay(nextDay(today)));
+    }
     let now = new Date();
     let res_year = now.getFullYear();
     let res_month;
@@ -233,4 +250,5 @@ module.exports = {
     roomController,
     timeSliceController,
     today,
+    nextDay
 }
