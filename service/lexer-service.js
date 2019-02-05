@@ -5,6 +5,17 @@ var chineseDateToNumberDate = require("../variables/general").chineseDateToNumbe
 var formatTime = require("../variables/general").formatTime;
 var today = require("../variables/general").today;
 
+const utils_list = {
+    tv: "TV",
+    airconditioner: "AIRCONDITIONER",
+    blackboard: "BLACKBOARD",
+    table: "TABLE",
+    wifi: "WIFI",
+    network: "NETWORK",
+    projector: "PROJECTOR",
+    power: "POWER"
+}
+
 const extractInfo = (items) => {
     let res = {};
     let timeList = [];
@@ -25,8 +36,38 @@ const extractInfo = (items) => {
         }
     }
 
+    let utils = [];
+
+    function push_utils(utils, util){
+        if (utils.indexOf(util) === -1){
+            utils.push(util);
+        }
+    };
+
     for (let i in items){
         let item = items[i];
+        console.log(item.item);
+        if (item.item.includes("电视")){
+            push_utils(utils, utils_list.tv);
+        }
+        else if (item.item.includes("空调")){
+            push_utils(utils, utils_list.airconditioner);
+        }
+        else if (item.item.includes("投影")){
+            push_utils(utils, utils_list.projector);
+        }
+        else if (item.item.includes("网络") || item.item.includes("wifi") || item.item.includes("WIFI") || item.item.includes("无线网络")){
+            push_utils(utils, utils_list.wifi);
+        }
+        else if (item.item.includes("黑板")){
+            push_utils(utils, utils_list.blackboard);
+        }
+        else if (item.item.includes("桌子")){
+            push_utils(utils, utils_list.table);
+        }
+        else if (item.item.includes("电源")){
+            push_utils(utils, utils_list.power);
+        }
 
         // extract time
         if (item.ne === "TIME"){
@@ -114,7 +155,7 @@ const extractInfo = (items) => {
         res.endTime = -1;
     }
     res.date = date ? date : -1;
-    
+    res.utils = utils;
     return res;
 }
 

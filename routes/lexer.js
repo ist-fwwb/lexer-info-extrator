@@ -25,9 +25,6 @@ router.get('/:text', function(req, res, next) {
     let text = req.params.text;
     let extractedInfo={};
 
-    /**
-     * Part 1: Lexer
-     */
     client.lexer(text)
     .then((result) => {
         console.log(JSON.stringify(result));
@@ -44,47 +41,7 @@ router.get('/:text', function(req, res, next) {
         if (extractInfo.error){
             return res.send(JSON.stringify(extractedInfo));
         }
-
-        /**
-         * Part 2: Search for room
-         */
-        let startTime = extractedInfo.startTime === -1 ? null : extractedInfo.startTime;
-        let endTime = extractedInfo.endTime === -1 ? null : extractedInfo.endTime;
-        let date = extractedInfo.date === -1 ? null : extractedInfo.date;
-        let api = roomController.getRoomByStartTimeAndEndTimeAndDate(startTime, endTime, date);
-        console.log(api)
-        fetch(api, {
-            method: 'get',
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data)
-            if (data.error){
-                extractedInfo.error = data.error
-            }
-            else{
-                if (data.length === 0){
-                    /**
-                     * Part 3: What if no suitable room ?
-                     * i) approximate room
-                     * ii) queue
-                     */
-
-                    extractedInfo.roomId = -1;
-                }
-                else {
-                    extractedInfo.roomId = data[0].id;
-                    extractedInfo.location = data[0].location
-                }
-            }
-            return res.send(JSON.stringify(extractedInfo));
-            
-        })
-        .catch((err) => {
-            console.log("Fetch Error:"+err)
-            extractedInfo.error = "Fetch Error";
-            return res.send(JSON.stringify(extractedInfo));
-        })
+        return res.send(JSON.stringify(extractedInfo));
         
     })
     .catch((err) => {
