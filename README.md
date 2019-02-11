@@ -20,5 +20,4 @@
 - [x] Utils
 - [ ] Size
 - [ ] Type
-- [ ] Name
 - [ ] NeedSignIn
