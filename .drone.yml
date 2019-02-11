@@ -1,0 +1,22 @@
+pipeline:
+  publish:
+    image: docker
+    secrets: [docker_username,docker_password]
+    commands:
+        - docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD registry.cn-shenzhen.aliyuncs.com/pipipan/frontend
+        - docker build -t registry.cn-shenzhen.aliyuncs.com/pipipan/lexer-info-extrator:master -f Dockerfile .
+        - docker push registry.cn-shenzhen.aliyuncs.com/pipipan/lexer-info-extrator:master
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    when:
+        branch: master
+        status: success
+
+  deploy:
+    image: appleboy/drone-ssh
+    host: 47.106.8.44
+    secrets: [ssh_username, ssh_password]
+    port: 22
+    script:
+      - docker run -it -d -p 4000:4000 registry.cn-shenzhen.aliyuncs.com/pipipan/lexer-info-extrator:master
+
