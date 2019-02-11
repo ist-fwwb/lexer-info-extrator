@@ -28,13 +28,14 @@ router.get('/:text', function(req, res, next) {
     client.lexer(text)
     .then((result) => {
         console.log(JSON.stringify(result));
-        extractedInfo.rawData = result;
         try{
             extractedInfo = extractInfo(result.items);
+            extractedInfo.rawData = result;
             console.log(JSON.stringify(extractedInfo));
         }
         catch(err){
             console.log("Extract Error:"+err)
+            extractedInfo.rawData = result;
             extractedInfo.error = "Extract Error";
             return res.send(JSON.stringify(extractedInfo));
         }

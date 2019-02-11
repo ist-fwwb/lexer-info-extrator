@@ -1,5 +1,6 @@
 var timeToId = require("../variables/general").timeToId;
 var idToTime = require("../variables/general").idToTime;
+var chineseWeekdayToNumberDate = require("../variables/general").chineseWeekdayToNumberDate;
 var chineseTimeToNumberTime = require("../variables/general").chineseTimeToNumberTime;
 var chineseDateToNumberDate = require("../variables/general").chineseDateToNumberDate;
 var formatTime = require("../variables/general").formatTime;
@@ -46,7 +47,6 @@ const extractInfo = (items) => {
 
     for (let i in items){
         let item = items[i];
-        console.log(item.item);
         if (item.item.includes("电视")){
             push_utils(utils, utils_list.tv);
         }
@@ -72,13 +72,35 @@ const extractInfo = (items) => {
         // extract time
         if (item.ne === "TIME"){
             timeFlag = true;
+            let zh_weekday = "";
             let zh_date_time = item.basic_words;
             let zh_time = [];
             let zh_date = [];
             let local_date_flag = false;
             let local_time_flag = false;
-            for (let j in zh_date_time){
+            let local_week_flag = false;
+
+            for (let j = 0; j < zh_date_time.length; j++){
                 let temp_ele = zh_date_time[j];
+
+                if (temp_ele.includes("周")){
+                    zh_weekday = temp_ele;
+                    local_week_flag = true;
+                    zh_date = []
+                    continue;
+                }
+                else if (temp_ele.includes("礼拜")){
+                    zh_weekday += temp_ele;
+                    j++;
+                    temp_ele = zh_date_time[j];
+                    zh_weekday += temp_ele;
+                    local_week_flag = true;
+                    zh_date = []
+                    continue;
+                }
+                else if (temp_ele === "下午" || temp_ele ==="上午" || temp_ele ==="晚上"){
+                    continue;
+                }
 
                 if (local_date_flag){
                     zh_time.push(temp_ele);
@@ -86,9 +108,11 @@ const extractInfo = (items) => {
                 else {
                     zh_date.push(temp_ele);
                 }
+
                 if (temp_ele.includes("号") || temp_ele.includes("日") || temp_ele === "明天" || temp_ele === "后天" || temp_ele === "今天"){
                     local_date_flag = true;
                 }
+                
             }
             /**
              * 1. Case: date_flag === false 
@@ -99,14 +123,19 @@ const extractInfo = (items) => {
              * time with date
              * e.g. 十二月五号十二点半, 11月5号十一点四十, ...
              */
-            if (local_date_flag === false){
+            if (local_week_flag){
+                console.log("zh_weekday: " + zh_weekday)
+                date = chineseWeekdayToNumberDate(zh_weekday);
+                zh_time = zh_date;
+            }
+            else if (local_date_flag === false){
                 zh_time = zh_date;
                 date = today
             }
-            else {
-                console.log("zh_date:"+zh_date);
+            else if (local_date_flag){
+                console.log("zh_date: "+zh_date);
                 date = chineseDateToNumberDate(zh_date);
-                console.log("num_date"+date);
+                console.log("num_date: "+date);
             }
 
             if (zh_time.length > 0){
@@ -147,8 +176,8 @@ const extractInfo = (items) => {
             }
         }
         
-        res.startTime = startTime;
-        res.endTime = endTime;
+        res.startTime = (startTime > 47 || startTime < 0) ? -1: startTime;
+        res.endTime = (endTime > 47 || endTime < 0) ? -1: endTime;
     }
     else{
         res.startTime = -1;

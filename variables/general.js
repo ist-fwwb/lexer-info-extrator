@@ -241,12 +241,34 @@ const chineseTimeToNumberTime = (basic_list) => {
     return res;
 }
 
+const chineseWeekdayToNumberDate = (weekday) => {
+    if (weekday.includes("六") || weekday.includes("日")){
+        return today;
+    }
+
+    let zhDay = weekday.substring(weekday.length-1);
+    let numDay = ChineseToNumber(zhDay);
+
+    let day = (new Date().getDay());
+    let gap = numDay - day;
+    if (gap < 0) {
+        gap += 7;
+    }
+
+    let result = today;
+    for (let i = 0; i < gap; i++){
+        result = nextDay(result);
+    }
+    return result;
+}
+
 module.exports = {
     idToTime,
     timeToId,
     formatTime,
     chineseTimeToNumberTime,
     chineseDateToNumberDate,
+    chineseWeekdayToNumberDate,
     roomController,
     timeSliceController,
     today,
