@@ -19,5 +19,6 @@ pipeline:
     port: 22
     script:
       - docker rm -f $(docker ps | grep lexer-info-extrator:master | gawk '{ print $1 }')
+      - docker rmi $(docker images | grep lexer-info-extrator | gawk '{ print $3 } ')
       - docker run -it -d -p 4000:4000 registry.cn-shenzhen.aliyuncs.com/pipipan/lexer-info-extrator:master
 
