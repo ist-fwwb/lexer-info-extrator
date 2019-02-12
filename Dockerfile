@@ -1,4 +1,4 @@
-FROM registry.cn-shenzhen.aliyuncs.com/docker_wizlah/nodejs
+FROM node:8
 WORKDIR /usr/src/app
 
 COPY package*.json ./
