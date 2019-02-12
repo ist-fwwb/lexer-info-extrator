@@ -1,4 +1,4 @@
-FROM registry.cn-shenzhen.aliyuncs.com/pipipan/node:1.0
+FROM registry.cn-shenzhen.aliyuncs.com/docker_wizlah/nodejs
 WORKDIR /usr/src/app
 
 COPY package*.json ./
