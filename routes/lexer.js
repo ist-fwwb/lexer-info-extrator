@@ -24,21 +24,22 @@ HttpClient.setRequestInterceptor(function(requestOptions) {
 router.get('/:text', function(req, res, next) {
     let text = req.params.text;
     let extractedInfo={};
-
     client.lexer(text)
     .then((result) => {
         console.log(JSON.stringify(result));
         try{
             extractedInfo = extractInfo(result.items);
-            extractedInfo.rawData = result;
+            //extractedInfo.rawData = result;
             console.log(JSON.stringify(extractedInfo));
         }
         catch(err){
             console.log("Extract Error:"+err)
-            extractedInfo.rawData = result;
+            //extractedInfo.rawData = result;
             extractedInfo.error = "Extract Error";
             return res.send(JSON.stringify(extractedInfo));
         }
+        extractedInfo.description = text;
+        extractedInfo.heading = "智能预定会议"
         if (extractInfo.error){
             return res.send(JSON.stringify(extractedInfo));
         }
